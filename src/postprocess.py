@@ -160,9 +160,9 @@ def find_candidates(indir, outdir, proc_chroms, chrom_lens, fdr_thresh, gap_larg
         candidates = d[(d['y1'] - d['x1'] <= candidate_upper_thresh) & \
                      (d['y1'] - d['x1'] >= candidate_lower_thresh) & \
                      (d['case_avg'] > 0) & \
-                     (d['tstat'] > tstat_threshold) & \
+                     #(d['tstat'] > tstat_threshold) & \
                      #(d['case_avg'] - d['control_avg'] > case_to_control_diff_threshold) & \
-                     (d['fdr_dist'] < fdr_thresh) &\
+                     #(d['fdr_dist'] < fdr_thresh) &\
                      (d['outlier_count'] > outlier_threshold_mult*num_cells)]
         logger.write(f'\tprocessor {rank}: {candidates.shape[0]} candidates found for {chrom}.', \
                              append_time = False, allow_all_ranks = True, verbose_level = 3)
@@ -175,11 +175,11 @@ def find_candidates(indir, outdir, proc_chroms, chrom_lens, fdr_thresh, gap_larg
             results = results[columns]
             results.to_csv(os.path.join(outdir, ".".join(["nofilter", chrom, "bedpe"])), sep = "\t", index = False)
             #print('init', results.shape)
-            results = results[(results['outlier_count'] > results['circle'] * circle_threshold_mult) & \
-                          (results['outlier_count'] > results['donut'] * donut_threshold_mult) & \
-                          (results['outlier_count'] > results['lower_left'] * lower_left_threshold_mult) & \
-                          (results['outlier_count'] > results['horizontal'] * horizontal_threshold_mult) & \
-                          (results['outlier_count'] > results['vertical'] * vertical_threshold_mult)]
+            #results = results[(results['outlier_count'] > results['circle'] * circle_threshold_mult) & \
+            #              (results['outlier_count'] > results['donut'] * donut_threshold_mult) & \
+            #              (results['outlier_count'] > results['lower_left'] * lower_left_threshold_mult) & \
+            #              (results['outlier_count'] > results['horizontal'] * horizontal_threshold_mult) & \
+            #              (results['outlier_count'] > results['vertical'] * vertical_threshold_mult)]
             #print('pre', results.shape)
             if filter_file:
                 try:
@@ -212,8 +212,8 @@ def find_candidates_integer(indir, outdir, proc_chroms, chrom_lens, fdr_thresh, 
                    (d['y1'] - d['x1'] >= candidate_lower_thresh) & \
                    (d['case_avg'] > 0) & \
                    #(d['case_avg'] - d['control_avg'] > case_to_control_diff_threshold) & \
-                   (d['tstat'] > tstat_threshold) & \
-                   (d['fdr_dist'] < fdr_thresh) &\
+                   #(d['tstat'] > tstat_threshold) & \
+                   #(d['fdr_dist'] < fdr_thresh) &\
                    (d['outlier_count'] > outlier_threshold_mult*num_cells)]
         #print("candidates")
         #print(candidates.shape)
@@ -244,11 +244,11 @@ def find_candidates_integer(indir, outdir, proc_chroms, chrom_lens, fdr_thresh, 
                   ['circle']
         results = results[columns] 
         results.to_csv(os.path.join(outdir, ".".join(["nofilter", chrom, "bedpe"])), sep = "\t", index = False)
-        results = results[(results['outlier_count'] > results['circle'] * circle_threshold_mult) & \
-                          (results['outlier_count'] > results['donut'] * donut_threshold_mult) & \
-                          (results['outlier_count'] > results['lower_left'] * lower_left_threshold_mult) & \
-                          (results['outlier_count'] > results['horizontal'] * horizontal_threshold_mult) & \
-                          (results['outlier_count'] > results['vertical'] * vertical_threshold_mult)]
+        #results = results[(results['outlier_count'] > results['circle'] * circle_threshold_mult) & \
+        #                  (results['outlier_count'] > results['donut'] * donut_threshold_mult) & \
+        #                  (results['outlier_count'] > results['lower_left'] * lower_left_threshold_mult) & \
+        #                  (results['outlier_count'] > results['horizontal'] * horizontal_threshold_mult) & \
+        #                  (results['outlier_count'] > results['vertical'] * vertical_threshold_mult)]
         if filter_file:
             filter_regions = pd.read_csv(filter_file, sep = "\t", header = None)
             filter_regions.rename({0:'chr', 1:'start'}, axis = 1, inplace = True)
