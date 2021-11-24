@@ -37,6 +37,6 @@ class Logger(object):
         self.rank = rank
 
     def dump_args(self, args):
-        self.write("Running snapHiC with following arguments")
+        self.write("Running SnapHiC-G with following arguments")
         for k, v in vars(args).items():
             self.write(f'\t{k}={v}', append_time = False)

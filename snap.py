@@ -25,7 +25,7 @@ def main():
     if parallel_mode == "parallel":
         parallel_properties['comm'].Barrier()
     threaded = True if parallel_mode == "threaded" else False
-    logger = src.logger.Logger(f'{args.outdir}/snapHiC.log', rank = rank, verbose_threshold = args.verbose, threaded = threaded)
+    logger = src.logger.Logger(f'{args.outdir}/SnapHiC-G.log', rank = rank, verbose_threshold = args.verbose, threaded = threaded)
     #logger.set_rank(rank)
     logger.dump_args(args)
     logger.write(f'Starting operation in {parallel_mode} mode')
@@ -141,41 +141,41 @@ def main():
         logger.flush()
         #print("combined") 
     
-    #step 4; call loops by local neighborhoods
+    #step 4; call loops by global background
     interaction_dir = os.path.join(args.outdir, "interactions")
     if 'interaction' in args.steps:
-        logger.write('Starting to compute local background')
+        logger.write('Starting to compute global background')
         logger.flush()
         if parallel_mode == 'nonparallel':
             call_interactions(indir = hic_dir, outdir = interaction_dir, chrom_lens = chrom_dict, \
                              binsize = args.binsize, dist = args.dist, \
                              neighborhood_limit_lower = args.local_lower_limit, \
                              neighborhood_limit_upper = args.local_upper_limit, rank = rank, \
-                             n_proc = n_proc, max_mem = args.max_memory, logger = logger)
+                             n_proc = n_proc, max_mem = args.max_memory, logger = logger, tss_file = args.tss_file, promoter_file = args.promoter_file, enhancer_file = args.enhancer_file)
         elif parallel_mode == 'parallel':
             parallel_properties['comm'].Barrier()
             call_interactions(indir = hic_dir, outdir = interaction_dir, chrom_lens = chrom_dict, \
                              binsize = args.binsize, dist = args.dist, \
                              neighborhood_limit_lower = args.local_lower_limit, \
                              neighborhood_limit_upper = args.local_upper_limit, rank = rank, \
-                             n_proc = n_proc, max_mem = args.max_memory, logger = logger)
+                             n_proc = n_proc, max_mem = args.max_memory, logger = logger, tss_file = args.tss_file, promoter_file = args.promoter_file, enhancer_file = args.enhancer_file)
             parallel_properties['comm'].Barrier()
         elif parallel_mode == 'threaded':
             params = [(hic_dir, interaction_dir, chrom_dict, args.binsize, args.dist, \
                        args.local_lower_limit, args.local_upper_limit, i, n_proc, \
-                       args.max_memory, logger) for i in range(n_proc)]
+                       args.max_memory, logger, args.tss_file, args.promoter_file, args.enhancer_file) for i in range(n_proc)]
             with multiprocessing.Pool(n_proc) as pool:
                 pool.starmap(call_interactions, params)
         if rank == 0:
             combine_chrom_interactions(directory = interaction_dir)
-        logger.write('Local background computation is completed')
+        logger.write('Global background computation is completed')
         logger.flush()
         #print("loops called")    
     
     #step 5; find candidates and cluster peaks
     postproc_dir = os.path.join(args.outdir, "postprocessed")
     if 'postprocess' in args.steps:
-        logger.write('Postprocessing based on local background values')
+        logger.write('Postprocessing based on global background values')
         logger.flush()
         #num_cells = pd.read_csv(glob.glob(os.path.join(hic_dir, "*.normalized.combined.bedpe"))[0], sep = "\t").shape[1] - 7
         if parallel_mode == 'nonparallel':
@@ -290,6 +290,12 @@ def create_parser():
                         type = int, help = 'two integer column numbers for read positions', required = False, default = "3 5")
     parser.add_argument('-l', '--chr-lens', action = 'store', \
                         help = 'path to the chromosome lengths file', required = True)
+    parser.add_argument('--tss-file', action = 'store', \
+                        help = 'gene TSS (transcript start site) file', required = True)
+    parser.add_argument('--promoter-file', action = 'store', \
+                        help = 'promoter file', required = False, default = None)
+    parser.add_argument('--enhancer-file', action = 'store', \
+                        help = 'enhancer file', required = False, default = None)
     parser.add_argument('-g', '--genome', action = 'store', help = 'genome name; hgxx or mmxx', \
                         required = False, default = "mm10")
     parser.add_argument('--chrom', action = 'store', help = 'chromosome to process', \
