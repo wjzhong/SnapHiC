@@ -100,7 +100,7 @@ def convert_sparse_dataframe_to_dense_matrix(d, mat_size, dist, binsize, upper_l
         d_portion_either_2 = tss_promoter_subset.merge(d_portion_either, how='inner', left_on=['chr', 'z1', 'z2'], right_on=['chr2', 'y1', 'y2'])
         d_portion_either_2 = d_portion_either_2.drop(['chr','z1','z2'], 1)
         
-        if enhancer_subset:
+        if not enhancer_subset.empty:
             d_portion_XOR_1 = enhancer_subset.merge(d_portion_either_1, how='inner', left_on=['chr', 'z1', 'z2'], right_on=['chr2', 'y1', 'y2'])
             d_portion_XOR_1 = d_portion_XOR_1.drop(['chr','z1','z2'], 1)
             d_portion_XOR_2 = enhancer_subset.merge(d_portion_either_2, how='inner', left_on=['chr', 'z1', 'z2'], right_on=['chr1', 'x1', 'x2'])
@@ -315,7 +315,7 @@ def call_interactions(indir, outdir, chrom_lens, binsize, dist, neighborhood_lim
         
         tss_promoter_subset = tss_promoter[tss_promoter['chr'] == chrom]
         
-        if enhancer_extended:
+        if not enhancer_extended.empty:
             enhancer_subset = enhancer_extended[enhancer_extended['chr'] == chrom]
         else:
             enhancer_subset = None
