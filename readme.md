@@ -1,5 +1,5 @@
 # SnapHiC-G: Single nucleus analysis pipeline for Hi-C data using global background
-#### (Latest updates: November 24th, 2021, version 0.1.0)
+#### (Latest updates: Aug 15, 2022, version 0.1.1)
 ## Identifying chromatin loops from single cell Hi-C data using global background
 ### Contents:
 1. [Installation](#installation)
