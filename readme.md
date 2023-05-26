@@ -137,7 +137,7 @@ Additional arguments that can be used, which can be found by *python snap.py --h
 
 <h3 id=contact-us>10. Contact us</h3>
 
-For any questions, comments and suggestions regarding SnapHiC-G, please submit an issue to Github with the details of your system and run. You can also send email to Wujuan Zhong (<zhongwujuan@gmail.com>), Weifang Liu (<weifangl@live.unc.edu>), Armen Abnousi (<a.abnousi@gmail.com>), Yun Li (<yunli@med.unc.edu>) or Ming Hu (<hum@ccf.org>).
+For any questions, comments and suggestions regarding SnapHiC-G, please submit an issue to Github with the details of your system and run. You can also send email to Wujuan Zhong (<zhongwujuan@gmail.com>), Weifang Liu (<weifangl@live.unc.edu>), Yun Li (<yunli@med.unc.edu>) or Ming Hu (<hum@ccf.org>).
 
 <h3 id=citation>11. Citation</h3>
 
